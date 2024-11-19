@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <validationRules>
+        <fullName>VR_DepartmentMustBeEntered</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK( Department )</errorConditionFormula>
+        <errorDisplayField>Department</errorDisplayField>
+        <errorMessage>Please Populate Department....</errorMessage>
+    </validationRules>
+</CustomObject>
