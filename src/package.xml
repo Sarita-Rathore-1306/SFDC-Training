@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Training_Session__c.Location__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Feedback__c</members>
+        <members>Training_Session__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>Training_Session__c.Prevent_Duplicacy_with_Name_and_Location</members>
+        <name>DuplicateRule</name>
+    </types>
+    <types>
+        <members>Training_Session__c.Check_Name_and_Location_Duplicacy</members>
+        <name>MatchingRule</name>
+    </types>
+    <types>
+        <members>Service_Account</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>Service Account Team</members>
+        <name>Profile</name>
+    </types>
+    <types>
+        <members>Training_Session__c.Webinar</members>
+        <members>Training_Session__c.Workshop</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>Restrict_Feedback_to_Profile</members>
+        <members>Restriction_On_Webinar_Record_Type</members>
+        <members>See_Lead_record_having_Industry_Consulting_or_Engineering</members>
+        <name>RestrictionRule</name>
+    </types>
+    <version>60.0</version>
+</Package>
