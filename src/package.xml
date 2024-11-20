@@ -27,5 +27,11 @@
         <members>Training_Session__c</members>
         <name>CustomTab</name>
     </types>
+    <types>
+        <members>Opportunity_Record_Page</members>
+        <members>Training_App_UtilityBar</members>
+        <members>Training_Home_Page</members>
+        <name>FlexiPage</name>
+    </types>
     <version>60.0</version>
 </Package>
