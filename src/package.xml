@@ -26,6 +26,13 @@
         <members>Feedback__c</members>
         <members>Training_Session__c</members>
         <name>CustomTab</name>
+        <members>Opportunity.Opportunity_Compact_Layout</members>
+        <name>CompactLayout</name>
+    </types>
+    <types>
+        <members>Training_App</members>
+        <name>CustomApplication</name>
+
     </types>
     <types>
         <members>Opportunity_Record_Page</members>
@@ -33,5 +40,11 @@
         <members>Training_Home_Page</members>
         <name>FlexiPage</name>
     </types>
+
+    <types>
+        <members>*</members>
+        <name>PathAssistant</name>
+    </types>
+
     <version>60.0</version>
 </Package>
