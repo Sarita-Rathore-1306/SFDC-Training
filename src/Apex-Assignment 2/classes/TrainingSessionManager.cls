@@ -51,10 +51,9 @@ public static void createRecordsOfTrainingSession(){
  Argument       : Id 
  Revision_Log   : V1.0
  */
-public static void readRecordsFromTrainingSession(ID id){
+public static void readRecordsFromTrainingSession(ID idOfRecordToRead){
   List<Training_Session__c> readRecords = new List<Training_Session__c>();
-  for(Training_Session__c trainingSessionsToBeReaded:[SELECT Id,Name FROM Training_Session__c]){
-    if(trainingSessionsToBeReaded.Id == id)
+  for(Training_Session__c trainingSessionsToBeReaded:[SELECT Id,Name FROM Training_Session__c WHERE Id = :idOfRecordToRead]){
       readRecords.add(trainingSessionsToBeReaded);
   }
   if(!readRecords.isEmpty())
@@ -68,17 +67,16 @@ public static void readRecordsFromTrainingSession(ID id){
  Argument       : Id,String
  Revision_Log   : V1.0
  */
-public static void updateRecordsFromTrainingSession(ID id, String location){
-  for(Training_Session__c trainingSessionToBeUpdated:[SELECT Id, Name, Location__c FROM Training_Session__c]){
-   try{
-    if(trainingSessionToBeUpdated.Id == id){
+public static void updateRecordsFromTrainingSession(ID idToUpdatedRecords, String location){
+  List<Training_Session__c> storeTrainingSessionToUpdate = [SELECT Id, Name, Location__c FROM Training_Session__c WHERE Id = :idToUpdatedRecords];
+  for(Training_Session__c trainingSessionToBeUpdated : storeTrainingSessionToUpdate){
       trainingSessionToBeUpdated.Location__c=location;
-      update trainingSessionToBeUpdated;
-    }
    } 
+   try{
+      update storeTrainingSessionToUpdate;
+     }
    catch(DmlException error){
      System.debug('DML Updation Failed'+ error.getMessage());
-   }
   }
 }
 /*
@@ -87,16 +85,14 @@ public static void updateRecordsFromTrainingSession(ID id, String location){
  Argument       : No Argument
  Revision_Log   : V1.0
  */
-public static void deleteRecordsFromTrainingSession(Id id){
-  for(Training_Session__c trainingSessionToBeDeleted: [SELECT Id, Name, Location__c FROM Training_Session__c]){
+public static void deleteRecordsFromTrainingSession(Id idForDeletingRecords){
+  List<Training_Session__c> trainingSessionToBeDeleted = [SELECT Id, Name, Location__c FROM Training_Session__c WHERE Id = :idForDeletingRecords];
    try{
-    if(trainingSessionToBeDeleted.Id == id)
       delete trainingSessionToBeDeleted; 
    } 
    catch(DmlException error){
     System.debug('DML Deletion Failed'+ error.getMessage());
    }
-  }
 }
 /*
  Purpose        : This Method safely navigates through the relationships of a Training_Session__c record to fetch related Attendee__c records.
@@ -124,27 +120,33 @@ public static List<Attendee__c> fetchRelatedRecordsOfAttendeesFromTrainingSessio
 //  Return         : void
 //  Argument       : ID,Attendee__c
 //  Revision_Log   : V1.0
-
-public static void addAttendeesToTrainingSession (ID idOftrainingSession, Attendee__c newAttendees){
-  //This Map will store the list of attendees related to the Training Session.
-  Map<String, Set<Attendee__c>> mapOfTrainingSessionWithAssociatedAttendees = new Map<String, Set<Attendee__c>>();
-  //For existing Records
-  for(Attendee__c detailsOfAttendees:[SELECT Id, Name, Training_Session_lookup__c, Training_Session_lookup__r.Name FROM Attendee__c WHERE Training_Session_lookup__r.Name!=Null])
-  {
-    if(!mapOfTrainingSessionWithAssociatedAttendees.containsKey(detailsOfAttendees.Training_Session_lookup__r.Name)){
-      mapOfTrainingSessionWithAssociatedAttendees.put(detailsOfAttendees.Training_Session_lookup__r.Name, new Set<Attendee__c>());
-      }
-      mapOfTrainingSessionWithAssociatedAttendees.get(detailsOfAttendees.Training_Session_lookup__r.Name).add(detailsOfAttendees);
-  }
-  //For New Records
-  for(Training_Session__c detailsOfTrainingSessions:[SELECT Id, Name FROM Training_Session__c WHERE Id = :idOftrainingSession])
-  {
-    if(!mapOfTrainingSessionWithAssociatedAttendees.containsKey(detailsOfTrainingSessions.Name)){
-     mapOfTrainingSessionWithAssociatedAttendees.put(detailsOfTrainingSessions.Name, new Set<Attendee__c>());
-    }
-     mapOfTrainingSessionWithAssociatedAttendees.get(detailsOfTrainingSessions.Name).add(newAttendees);
-     insert newAttendees;
-      }
-  System.debug(mapOfTrainingSessionWithAssociatedAttendees);
-  }
-}
+   public static void addAttendeesToTrainingSession1(Id idOfTrainingSession , List<Attendee__c> newAttendee){
+       List<Attendee__c> listOfExistingAttendees =[SELECT Id, Name, Phone__c,Training_Session__c FROM Attendee__c WHERE Training_Session__c != Null];
+       Set<String> listToStorePhone = new Set<String>();
+        for(Attendee__c attendees : listOfExistingAttendees){
+            listToStorePhone.add(attendees.Phone__c);
+        }
+        Set<String> listOfNewPhone = new Set<String>();
+        for(Attendee__c att:newAttendee){
+            listOfNewPhone.add(att.Phone__c);
+        }
+        listOfNewPhone.removeAll(listToStorePhone);
+        List<Attendee__c> listOfNewAttendeesToInsert = new List<Attendee__c>();
+        for(Attendee__c att:newAttendee){
+            if(listOfNewPhone.contains(att.Phone__c)){
+              Attendee__c newRecord = new Attendee__c();
+              newRecord.Name = att.Name;
+              newRecord.Phone__c = att.Phone__c;
+              newRecord.Training_Session__c = idOfTrainingSession;
+              listOfNewAttendeesToInsert.add(newRecord);
+              listOfNewPhone.remove(att.Phone__c)  ;}          
+        }
+        if(!listOfNewAttendeesToInsert.isEmpty()){
+        try{
+            insert listOfNewAttendeesToInsert;
+        }
+        catch(DmlException e){
+            System.debug('Insertion Failed' + e.getMessage());
+        }
+        }
+}}
