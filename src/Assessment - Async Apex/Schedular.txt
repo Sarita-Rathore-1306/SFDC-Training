@@ -1,0 +1,14 @@
+public class AccountSupportScoreBatchScheduler implements Schedulable {
+    public void execute(SchedulableContext sc){
+        AccountSupportScoreBatch bat = new AccountSupportScoreBatch();
+        Database.executeBatch(bat);
+    }
+}
+
+
+
+
+//How to execute this schedular
+//This will run daily at 12:00 am.
+//  String str = '0 0 0 * * ? *' ;
+//  System.schedule('Schedule Batch' , str , new AccountSupportScoreBatchScheduler());

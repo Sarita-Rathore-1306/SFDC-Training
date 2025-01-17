@@ -1,0 +1,80 @@
+    // Purpose : Batch Class to process Batch
+    
+    // Created By : Sarita Rathore - 17/01/2025
+   
+    // Created Date : 17/01/2025
+
+
+global class AccountSupportScoreBatch implements Database.Batchable<sObject>, Database.stateful {
+    //This Map will store the Account Id with the score.
+    public Map<Id,Integer> storeIdWithScore = new Map<Id,Integer>();  
+    public Database.QueryLocator start(Database.batchableContext bc){
+        return database.getQueryLocator('SELECT Id,Status,Priority,CreatedDate,AccountId FROM Case WHERE Status != \'Closed\' AND AccountId != Null AND CreatedDate > Yesterday');
+    }
+    
+    public void execute(Database.batchableContext bc , List<Case> listofsObjects){
+        //This Map will store Account Id and their related cases list
+        Map<Id,List<Case>> mapStoreAccountWithRealtedCases = new Map<Id,List<Case>>();
+        if(!listofsObjects.isEmpty()){
+        for( Case cs :listofsObjects){
+            if(mapStoreAccountWithRealtedCases.containsKey(cs.AccountId)){
+                mapStoreAccountWithRealtedCases.get(cs.AccountId).add(cs);
+            }else {
+                mapStoreAccountWithRealtedCases.put(cs.AccountId,new List<Case>{cs});
+            }
+        }}
+        
+        
+        for(Id idOfAccount : mapStoreAccountWithRealtedCases.keySet()){
+            Integer score = getAccountSupportScore(mapStoreAccountWithRealtedCases.get(idOfAccount));
+            if(storeIdWithScore.get(idOfAccount) == Null)
+            storeIdWithScore.put(idOfAccount,score);
+            else{
+            storeIdWithScore.put(idOfAccount ,storeIdWithScore.get(idOfAccount) + score) ;
+            }
+        }
+    }
+    
+    public void finish(Database.batchableContext bc){
+
+        list<Account> listOfAccount = [SELECT Id,Support_Score__c FROM Account WHERE ID IN :storeIdWithScore.keySet()];
+        for(Account acc : listOfAccount){
+            if(acc.Support_Score__c != Null)
+            acc.Support_Score__c = acc.Support_Score__c + storeIdWithScore.get(acc.Id);
+            else {
+              acc.Support_Score__c =0 ;
+              acc.Support_Score__c = acc.Support_Score__c + storeIdWithScore.get(acc.Id);
+            }
+        }
+        if(!listOfAccount.isEmpty()){
+            update listOfAccount ;
+        }
+    }
+    
+
+    // Purpose : This method will get the total score on all the cases
+    // Argument: List<Case>
+    // Return  : Integer
+    // Created By : Sarita Rathore - 17/01/2025
+
+    public static Integer getAccountSupportScore(List<Case> listOfAllTheCases){
+        Integer sumOfScore = 0;
+        for(Case cs : listOfAllTheCases){
+            if(cs.Priority == 'High'){
+                sumOfScore += 3;
+            } else if(cs.Priority == 'Medium'){
+                sumOfScore += 2 ;
+            } else if(cs.Priority == 'Low'){
+                sumOfScore += 1;
+            }
+            
+            if(cs.CreatedDate > (System.Today()-30)){
+                sumOfScore += 1 ;
+            }else if(cs.CreatedDate < (System.Today() - 60)){
+                sumOfScore -= 1 ;
+            }
+        }
+        
+        return sumOfScore ;
+    }
+}
