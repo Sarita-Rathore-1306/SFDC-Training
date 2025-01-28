@@ -1,0 +1,43 @@
+<!-- recordViewCustomLayout.html -->
+<template>
+  <lightning-record-view-form record-id={recordId} object-api-name="Account">
+   <lightning-card title="Account Details">
+    <div class="slds-grid slds-wrap slds-p-around_large">
+      <div class="slds-col slds-size_1-of-2">
+        <lightning-output-field field-name="Name"></lightning-output-field>
+        <lightning-output-field field-name="Phone"></lightning-output-field>
+      </div>
+      <div class="slds-col slds-size_1-of-2">
+        <lightning-output-field field-name="DandbCompanyId"></lightning-output-field>
+        <lightning-output-field field-name="Website"></lightning-output-field>
+      </div>
+    </div>
+    </lightning-card>
+  </lightning-record-view-form>
+  <div class="slds-m-top_small slds-m-bottom_medium">
+  <lightning-button variant="brand" label="Create" title="Primary action" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+   </div>
+   
+   <template lwc:if={isCreateRecord}>
+   <lightning-record-edit-form object-api-name={contactObject} onsuccess={handleContactCreated}>
+    <lightning-messages></lightning-messages>
+    <div class="slds-grid">
+      <div class="slds-col slds-size_1-of-2">
+        <lightning-input-field field-name={accountidField} value={recordId}></lightning-input-field>
+        <lightning-input-field field-name={fnameField}></lightning-input-field>
+        <lightning-input-field field-name={lnameField}></lightning-input-field>
+      </div>
+      <div class="slds-col slds-size_1-of-2">
+        <lightning-input-field field-name={phoneField}></lightning-input-field>
+        <lightning-input-field field-name={emailField}></lightning-input-field>
+      </div>
+    </div>
+    <lightning-button type="submit" variant="brand" label="Create Contact" onclick={handleClick1}></lightning-button>
+    </lightning-record-edit-form>
+   </template>
+ 
+
+
+   
+     
+</template>
