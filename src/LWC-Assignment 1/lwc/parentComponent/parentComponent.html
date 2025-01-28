@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title="Play With Data Communication in LWC">
+    <div class="slds-p-left_large">Parent Component</div>
+
+    <div class="slds-p-left_large">Child To Parent : {childtoparentvalue}</div>
+    <div class="slds-p-left_large">
+    <lightning-input type="text" label="Add Greetings From Parent Component" onchange ={handleInputChange}></lightning-input>
+    
+    </div> 
+    <c-child-component onchildevent = {handleevent}  parent-to-child = {parenttochildvalue}></c-child-component>
+    
+   </lightning-card>
+
+</template>
