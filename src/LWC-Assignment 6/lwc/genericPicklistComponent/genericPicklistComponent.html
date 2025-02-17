@@ -1,0 +1,26 @@
+<template>
+    <lightning-card title="Generic Picklist Component" >
+     <div class="slds-p-around_medium lgc-bg">
+        <lightning-input type="text" label="Object API Name" onchange={handleInputChange}></lightning-input>
+     </div>
+     <div class="slds-p-around_medium lgc-bg">
+        <lightning-combobox
+            name="progress"
+            label="Select Object Picklist field"
+            options={options}
+            onchange={handleChange} >
+        </lightning-combobox>
+     </div>
+
+     <div class="slds-p-around_medium lgc-bg">
+        <lightning-combobox
+            name="progress"
+            label="Select any Picklist value"
+            options={optionspicklistvalues}
+            value = {value}
+            onchange={handleChange1}>
+        </lightning-combobox>
+     </div>
+    </lightning-card>
+        
+</template>
