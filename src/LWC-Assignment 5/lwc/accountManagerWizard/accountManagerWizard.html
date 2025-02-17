@@ -1,0 +1,49 @@
+<template>
+        <lightning-card   title="Account Details" icon-name="standard:account">
+            <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions"></lightning-button-icon>
+            <div class="slds-p-left_medium">Account Name       : {name}</div>
+            <div class="slds-p-left_medium">Account Owner      : {owner}</div>
+            <div class="slds-p-left_medium">Number of Contacts : {numberContacts}</div>
+            <div class="slds-p-left_medium">Description        : {description}</div>
+        </lightning-card>
+        <lightning-layout multiple-rows="true" vertical-align="end">
+            <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6" padding="around-small">
+                    <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                    <lightning-input type="text" 
+                                                     label="Search Contacts here" 
+                                                     onchange={handleContactName} ></lightning-input>
+                            </div>
+                        </div> 
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-card   title="Related Contacts" icon-name="standard:account">
+        <lightning-datatable
+        data={data}
+        columns={columns}
+        key-field="Id"
+        onrowselection={getSelectedName}
+    >
+    </lightning-datatable>
+
+</lightning-card>
+    <div class="slds-p-around_medium">
+        <lightning-button label="Create New Contact" 
+                          variant="brand" 
+                          onclick={handleClick}></lightning-button>
+                
+    </div>
+     
+   
+    <template if:true={isShowModal}> 
+        <c-contact-save-form onchildevent = {handlechildevent} recordid = {recordId} onchildevent1 = {handlechildevent1}></c-contact-save-form>
+    </template>
+   
+
+           
+
+   
+   
+        
+
+</template>
