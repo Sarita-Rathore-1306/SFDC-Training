@@ -1,0 +1,27 @@
+<template>
+    <lightning-card   title="Account Details" icon-name="standard:account">
+
+    <div style="text-align: right;" class = 'slds-p-around_medium' >
+        <lightning-button label="New Account" 
+                          variant="vibrant" 
+                          onclick={handleClick} ></lightning-button>
+    </div>
+
+    <div style="height: 300px;">
+        <lightning-datatable
+                key-field="id"
+                data={data}
+                columns={columns}
+                sorted-by={sortedBy}
+                sorted-direction={sortedDirection}
+                onsort={handleSort}
+                hide-checkbox-column="true">
+        </lightning-datatable>
+    </div>
+
+    <template if:true={isShowModal}> 
+        <c-account-save-form onselected = {handlechildevent} ></c-account-save-form>
+    </template>
+
+    </lightning-card>
+</template>
